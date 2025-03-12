@@ -40,18 +40,48 @@ const Index = () => {
             <div className="bg-background dark:bg-card rounded-2xl p-6 shadow-xl">
               <div className="grid grid-cols-2 gap-4">
                 {[
-                  { title: "Chat Support", icon: "💬", color: "bg-mindmate-100 dark:bg-mindmate-900/30" },
-                  { title: "Facial Analysis", icon: "😊", color: "bg-lilac-100 dark:bg-lilac-900/30" },
-                  { title: "Voice Analysis", icon: "🎤", color: "bg-lilac-100 dark:bg-lilac-900/30" },
-                  { title: "Mood Journal", icon: "📔", color: "bg-mindmate-100 dark:bg-mindmate-900/30" },
-                  { title: "Resources", icon: "📚", color: "bg-mindmate-100 dark:bg-mindmate-900/30" },
-                  { title: "Professional Help", icon: "👨‍⚕️", color: "bg-lilac-100 dark:bg-lilac-900/30" }
+                  { 
+                    title: "Chat Support", 
+                    image: "https://images.unsplash.com/photo-1649972904349-6e44c42644a7?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80", 
+                    color: "bg-mindmate-100 dark:bg-mindmate-900/30" 
+                  },
+                  { 
+                    title: "Facial Analysis", 
+                    image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80", 
+                    color: "bg-lilac-100 dark:bg-lilac-900/30" 
+                  },
+                  { 
+                    title: "Voice Analysis", 
+                    image: "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80", 
+                    color: "bg-lilac-100 dark:bg-lilac-900/30" 
+                  },
+                  { 
+                    title: "Mood Journal", 
+                    image: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80", 
+                    color: "bg-mindmate-100 dark:bg-mindmate-900/30" 
+                  },
+                  { 
+                    title: "Resources", 
+                    image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80", 
+                    color: "bg-mindmate-100 dark:bg-mindmate-900/30" 
+                  },
+                  { 
+                    title: "Professional Help", 
+                    image: "https://images.unsplash.com/photo-1531297484001-80022131f5a1?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80", 
+                    color: "bg-lilac-100 dark:bg-lilac-900/30" 
+                  }
                 ].map((module, index) => (
                   <div 
                     key={index}
                     className={`rounded-xl ${module.color} p-4 text-center hover:scale-105 transition-transform duration-300 flex flex-col items-center justify-center`}
                   >
-                    <div className="text-3xl mb-2">{module.icon}</div>
+                    <div className="mb-2 h-24 w-full overflow-hidden rounded-lg">
+                      <img 
+                        src={module.image} 
+                        alt={module.title} 
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
                     <h3 className="text-sm font-medium">{module.title}</h3>
                   </div>
                 ))}

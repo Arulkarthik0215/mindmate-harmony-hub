@@ -6,9 +6,8 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Send } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
-// This is a placeholder for the OpenAI API
-// In a real app, you would store this in a secure location
-const API_KEY = "YOUR_OPENAI_API_KEY"; 
+// The key is a placeholder - see note below about API keys
+const API_KEY = ""; 
 
 interface Message {
   role: 'user' | 'assistant';
@@ -17,6 +16,7 @@ interface Message {
 
 const ChatModule = () => {
   const [input, setInput] = useState('');
+  const [apiKey, setApiKey] = useState(localStorage.getItem('mindmate_api_key') || '');
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
@@ -35,6 +35,13 @@ const ChatModule = () => {
     scrollToBottom();
   }, [messages]);
 
+  useEffect(() => {
+    // Save API key to localStorage if it exists
+    if (apiKey) {
+      localStorage.setItem('mindmate_api_key', apiKey);
+    }
+  }, [apiKey]);
+
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -47,13 +54,25 @@ const ChatModule = () => {
     setIsLoading(true);
     
     try {
-      // This is a demo integration with ChatGPT API
-      // In production, this would be handled by a backend service
+      if (!apiKey) {
+        // If no API key, provide a simulated response
+        setTimeout(() => {
+          const botMessage: Message = { 
+            role: 'assistant', 
+            content: "I notice you haven't entered an OpenAI API key yet. I'm currently in demo mode, so my responses are pre-programmed. To enable the full AI experience, please enter your OpenAI API key in the field above the chat."
+          };
+          setMessages(prev => [...prev, botMessage]);
+          setIsLoading(false);
+        }, 1000);
+        return;
+      }
+      
+      // Real integration with OpenAI API
       const response = await fetch("https://api.openai.com/v1/chat/completions", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${API_KEY}`
+          "Authorization": `Bearer ${apiKey}`
         },
         body: JSON.stringify({
           model: "gpt-4o-mini",
@@ -69,24 +88,32 @@ const ChatModule = () => {
         })
       });
       
-      // DEMO ONLY: Since we're not using a real API key, simulate a response
-      // In a real app, you would parse the response
-      setTimeout(() => {
-        const botMessage: Message = { 
-          role: 'assistant', 
-          content: "I understand what you're going through. It's common to feel this way, and your feelings are valid. Would you like to talk more about what's happening? I'm here to listen and support you."
-        };
-        setMessages(prev => [...prev, botMessage]);
-        setIsLoading(false);
-      }, 1000);
+      if (!response.ok) {
+        throw new Error(`API error: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      const botMessage: Message = { 
+        role: 'assistant', 
+        content: data.choices[0].message.content 
+      };
+      setMessages(prev => [...prev, botMessage]);
       
     } catch (error) {
       console.error("Error calling chat API:", error);
       toast({
         title: "Error",
-        description: "Failed to send message. Please try again.",
+        description: "Failed to get a response. Please check your API key or try again later.",
         variant: "destructive"
       });
+      
+      // Add a fallback response
+      const botMessage: Message = { 
+        role: 'assistant', 
+        content: "I'm having trouble connecting to my systems. This could be due to an invalid API key or network issues. Please try again later or check your API key."
+      };
+      setMessages(prev => [...prev, botMessage]);
+    } finally {
       setIsLoading(false);
     }
   };
@@ -95,7 +122,34 @@ const ChatModule = () => {
     <div className="flex flex-col h-full border rounded-xl overflow-hidden bg-card">
       <div className="p-4 border-b bg-muted/30">
         <h2 className="text-xl font-semibold">MindMate Chat Support</h2>
-        <p className="text-sm text-muted-foreground">Talk to our AI assistant about how you're feeling</p>
+        <p className="text-sm text-muted-foreground mb-2">Talk to our AI assistant about how you're feeling</p>
+        
+        <div className="flex gap-2 items-center">
+          <Input
+            type="password"
+            placeholder="Enter OpenAI API Key (optional)"
+            value={apiKey}
+            onChange={(e) => setApiKey(e.target.value)}
+            className="text-xs"
+          />
+          <Button 
+            variant="outline" 
+            size="sm"
+            onClick={() => {
+              if (apiKey) {
+                toast({
+                  title: "API Key Saved",
+                  description: "Your API key has been saved locally in your browser."
+                });
+              }
+            }}
+          >
+            Save Key
+          </Button>
+        </div>
+        <p className="text-xs text-muted-foreground mt-1">
+          Your API key is stored locally in your browser only. Without a key, the chat will operate in demo mode.
+        </p>
       </div>
       
       <ScrollArea className="flex-grow p-4">

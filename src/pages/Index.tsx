@@ -1,11 +1,96 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { motion } from 'framer-motion';
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-800">
+      <div className="container mx-auto px-4 py-16 lg:py-32">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="flex flex-col space-y-6"
+          >
+            <h1 className="text-4xl lg:text-6xl font-bold text-foreground">
+              Welcome to <span className="text-primary">MindMate</span>
+            </h1>
+            <p className="text-xl text-muted-foreground">
+              Your companion for mental wellness, providing tools and support for your journey to better mental health.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 pt-4">
+              <Button asChild size="lg" className="rounded-full">
+                <Link to="/auth/login">Get Started</Link>
+              </Button>
+              <Button asChild variant="outline" size="lg" className="rounded-full">
+                <Link to="/auth/register">Create Account</Link>
+              </Button>
+            </div>
+          </motion.div>
+          
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="rounded-2xl p-1 bg-gradient-to-r from-lilac-300 via-mindmate-300 to-lilac-300"
+          >
+            <div className="bg-background dark:bg-card rounded-2xl p-6 shadow-xl">
+              <div className="grid grid-cols-2 gap-4">
+                {[
+                  { title: "Chat Support", icon: "💬", color: "bg-mindmate-100 dark:bg-mindmate-900/30" },
+                  { title: "Facial Analysis", icon: "😊", color: "bg-lilac-100 dark:bg-lilac-900/30" },
+                  { title: "Voice Analysis", icon: "🎤", color: "bg-lilac-100 dark:bg-lilac-900/30" },
+                  { title: "Mood Journal", icon: "📔", color: "bg-mindmate-100 dark:bg-mindmate-900/30" },
+                  { title: "Resources", icon: "📚", color: "bg-mindmate-100 dark:bg-mindmate-900/30" },
+                  { title: "Professional Help", icon: "👨‍⚕️", color: "bg-lilac-100 dark:bg-lilac-900/30" }
+                ].map((module, index) => (
+                  <div 
+                    key={index}
+                    className={`rounded-xl ${module.color} p-4 text-center hover:scale-105 transition-transform duration-300 flex flex-col items-center justify-center`}
+                  >
+                    <div className="text-3xl mb-2">{module.icon}</div>
+                    <h3 className="text-sm font-medium">{module.title}</h3>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        </div>
+        
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="mt-24 text-center"
+        >
+          <h2 className="text-3xl font-bold mb-8">How MindMate Helps</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="p-6 bg-card rounded-xl shadow-sm">
+              <div className="w-12 h-12 mx-auto mb-4 flex items-center justify-center bg-mindmate-100 dark:bg-mindmate-900/30 rounded-full text-2xl">
+                🧠
+              </div>
+              <h3 className="text-xl font-semibold mb-2">Track Your Mental Health</h3>
+              <p className="text-muted-foreground">Monitor your mood, identify patterns, and gain insights into your mental wellbeing.</p>
+            </div>
+            <div className="p-6 bg-card rounded-xl shadow-sm">
+              <div className="w-12 h-12 mx-auto mb-4 flex items-center justify-center bg-lilac-100 dark:bg-lilac-900/30 rounded-full text-2xl">
+                🤝
+              </div>
+              <h3 className="text-xl font-semibold mb-2">Get Support</h3>
+              <p className="text-muted-foreground">Connect with our AI chatbot for immediate support or find professional help when needed.</p>
+            </div>
+            <div className="p-6 bg-card rounded-xl shadow-sm">
+              <div className="w-12 h-12 mx-auto mb-4 flex items-center justify-center bg-mindmate-100 dark:bg-mindmate-900/30 rounded-full text-2xl">
+                📈
+              </div>
+              <h3 className="text-xl font-semibold mb-2">Improve Over Time</h3>
+              <p className="text-muted-foreground">Access resources, tools and strategies to build resilience and improve your mental health.</p>
+            </div>
+          </div>
+        </motion.div>
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { PageTransition } from '@/components/ui/PageTransition';
+import PageTransition from '@/components/ui/PageTransition';
 import ChatModule from '@/components/modules/ChatModule';
 
 const ChatSupport = () => {

@@ -37,7 +37,7 @@ const Dashboard = () => {
       imageUrl: 'https://images.unsplash.com/photo-1567596388756-f6d710c8fc07?auto=format&fit=crop&q=80&w=800'
     },
     {
-      title: 'Mood Journal',
+      title: 'MindCheck',
       description: 'Track your mood and emotions with standardized assessments',
       icon: <Brain className="w-8 h-8" />,
       to: '/mood-journal',

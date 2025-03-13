@@ -1,13 +1,13 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, BookOpen, ClipboardList } from 'lucide-react';
+import { ArrowLeft, BookOpen, ClipboardList, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { Link } from 'react-router-dom';
 import PageTransition from '@/components/ui/PageTransition';
 import AppLayout from '@/components/Layout/AppLayout';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 
 // Define assessment types and question sets
 type Assessment = 'phq9' | 'gad7';
@@ -42,18 +42,18 @@ const GAD7_QUESTIONS: Question[] = [
 
 // Interpretation ranges
 const PHQ9_INTERPRETATION = [
-  { range: [0, 4], severity: "Minimal or no depression", color: "bg-green-100 dark:bg-green-900/30" },
-  { range: [5, 9], severity: "Mild depression", color: "bg-blue-100 dark:bg-blue-900/30" },
-  { range: [10, 14], severity: "Moderate depression", color: "bg-yellow-100 dark:bg-yellow-900/30" },
-  { range: [15, 19], severity: "Moderately severe depression", color: "bg-orange-100 dark:bg-orange-900/30" },
-  { range: [20, 27], severity: "Severe depression", color: "bg-red-100 dark:bg-red-900/30" }
+  { range: [0, 4], severity: "No depression", color: "bg-green-100 dark:bg-green-900/30", description: "Your symptoms suggest minimal or no signs of depression." },
+  { range: [5, 9], severity: "Mild depression", color: "bg-blue-100 dark:bg-blue-900/30", description: "Your symptoms suggest mild depression. Consider monitoring your mood and practicing self-care." },
+  { range: [10, 14], severity: "Moderate depression", color: "bg-yellow-100 dark:bg-yellow-900/30", description: "Your symptoms suggest moderate depression. Consider talking to a mental health professional." },
+  { range: [15, 19], severity: "Moderately severe depression", color: "bg-orange-100 dark:bg-orange-900/30", description: "Your symptoms suggest moderately severe depression. It's recommended that you consult with a mental health professional." },
+  { range: [20, 27], severity: "Severe depression", color: "bg-red-100 dark:bg-red-900/30", description: "Your symptoms suggest severe depression. It's strongly recommended that you consult with a mental health professional as soon as possible." }
 ];
 
 const GAD7_INTERPRETATION = [
-  { range: [0, 4], severity: "Minimal anxiety", color: "bg-green-100 dark:bg-green-900/30" },
-  { range: [5, 9], severity: "Mild anxiety", color: "bg-blue-100 dark:bg-blue-900/30" },
-  { range: [10, 14], severity: "Moderate anxiety", color: "bg-yellow-100 dark:bg-yellow-900/30" },
-  { range: [15, 21], severity: "Severe anxiety", color: "bg-red-100 dark:bg-red-900/30" }
+  { range: [0, 4], severity: "Minimal anxiety", color: "bg-green-100 dark:bg-green-900/30", description: "Your symptoms suggest minimal or no signs of anxiety." },
+  { range: [5, 9], severity: "Mild anxiety", color: "bg-blue-100 dark:bg-blue-900/30", description: "Your symptoms suggest mild anxiety. Consider monitoring your symptoms and practicing relaxation techniques." },
+  { range: [10, 14], severity: "Moderate anxiety", color: "bg-yellow-100 dark:bg-yellow-900/30", description: "Your symptoms suggest moderate anxiety. Consider consulting with a mental health professional." },
+  { range: [15, 21], severity: "Severe anxiety", color: "bg-red-100 dark:bg-red-900/30", description: "Your symptoms suggest severe anxiety. It's strongly recommended that you consult with a mental health professional as soon as possible." }
 ];
 
 const MoodJournal = () => {
@@ -113,13 +113,20 @@ const MoodJournal = () => {
     
     return (
       <div className="space-y-6">
-        <div className="px-1 text-sm text-muted-foreground">
-          <p>Over the last 2 weeks, how often have you been bothered by any of the following problems?</p>
-          <div className="flex justify-between mt-3 px-8 md:px-16 text-xs">
-            <span>Not at all</span>
-            <span>Several days</span>
-            <span>More than half the days</span>
-            <span>Nearly every day</span>
+        <div className="p-4 bg-muted rounded-lg">
+          <div className="flex items-start gap-3">
+            <Info className="h-5 w-5 mt-0.5 text-muted-foreground" />
+            <div>
+              <p className="text-sm font-medium">
+                Over the last 2 weeks, how often have you been bothered by any of the following problems?
+              </p>
+              <div className="flex justify-between mt-3 px-8 md:px-16 text-xs">
+                <span>Not at all</span>
+                <span>Several days</span>
+                <span>More than half the days</span>
+                <span>Nearly every day</span>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -158,6 +165,31 @@ const MoodJournal = () => {
   const renderResults = () => {
     const interpretation = getInterpretation();
     if (!interpretation) return null;
+    
+    const scoringGuide = activeAssessment === 'phq9' 
+      ? (
+        <div className="mt-6 text-sm">
+          <p className="font-semibold mb-2">PHQ-9 Scoring Guide:</p>
+          <ul className="list-disc pl-5 space-y-1">
+            <li>0-4: No depression</li>
+            <li>5-9: Mild depression</li>
+            <li>10-14: Moderate depression</li>
+            <li>15-19: Moderately severe depression</li>
+            <li>20-27: Severe depression</li>
+          </ul>
+        </div>
+      ) 
+      : (
+        <div className="mt-6 text-sm">
+          <p className="font-semibold mb-2">GAD-7 Scoring Guide:</p>
+          <ul className="list-disc pl-5 space-y-1">
+            <li>0-4: Minimal anxiety</li>
+            <li>5-9: Mild anxiety</li>
+            <li>10-14: Moderate anxiety</li>
+            <li>15-21: Severe anxiety</li>
+          </ul>
+        </div>
+      );
 
     return (
       <motion.div
@@ -168,23 +200,32 @@ const MoodJournal = () => {
         <div className={`p-6 rounded-lg ${interpretation.color}`}>
           <h3 className="text-xl font-semibold mb-2">Your Score: {score}</h3>
           <p className="font-medium">{interpretation.severity}</p>
+          <p className="mt-2 text-sm">{interpretation.description}</p>
           
           <div className="mt-4 text-sm text-muted-foreground">
             {activeAssessment === 'phq9' ? (
               <p>
-                This questionnaire is a screening tool for depression. If you scored in the moderate
-                to severe range, consider consulting with a mental health professional.
+                This questionnaire is a screening tool for depression. It is not a diagnostic tool, but it can help you understand your symptoms.
               </p>
             ) : (
               <p>
-                This questionnaire is a screening tool for anxiety. If you scored in the moderate
-                to severe range, consider consulting with a mental health professional.
+                This questionnaire is a screening tool for anxiety. It is not a diagnostic tool, but it can help you understand your symptoms.
               </p>
             )}
           </div>
         </div>
 
-        <div className="flex justify-between">
+        <Alert>
+          <AlertTitle>Important Note</AlertTitle>
+          <AlertDescription>
+            These assessments are for screening purposes only and do not replace professional diagnosis. 
+            If you're experiencing distress, please consult with a healthcare provider.
+          </AlertDescription>
+        </Alert>
+
+        {scoringGuide}
+
+        <div className="flex justify-between mt-6">
           <Button 
             variant="outline" 
             onClick={() => {
@@ -217,7 +258,7 @@ const MoodJournal = () => {
                   <ArrowLeft className="mr-1 h-4 w-4" />
                   Back to Dashboard
                 </Link>
-                <h1 className="text-3xl font-bold tracking-tight mb-2">Mood Journal</h1>
+                <h1 className="text-3xl font-bold tracking-tight mb-2">MindCheck</h1>
                 <p className="text-muted-foreground">
                   Track your mental health using standardized assessments
                 </p>

@@ -30,7 +30,7 @@ const App = () => (
           <Route path="/auth/register" element={<Register />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/chatbot" element={<ChatSupport />} />
-          <Route path="/mood-journal" element={<MoodJournal />} />
+          <Route path="/mood-journal" element={<MoodJournal />} /> {/* Keeping the URL the same for compatibility */}
           <Route path="/resources" element={<Resources />} />
           <Route path="/facial-analysis" element={<FacialAnalysisModule />} />
           <Route path="/voice-analysis" element={<VoiceAnalysisModule />} />

@@ -47,7 +47,7 @@ const ModuleCard: React.FC<ModuleCardProps> = ({
               alt={title} 
               className="w-full h-full object-cover" 
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
           </div>
         )}
         
@@ -63,11 +63,11 @@ const ModuleCard: React.FC<ModuleCardProps> = ({
           </div>
           <h3 className={cn(
             "text-xl font-semibold mb-2",
-            imageUrl ? "text-white dark:text-white" : ""
+            imageUrl ? "text-white dark:text-white" : "text-foreground dark:text-foreground"
           )}>{title}</h3>
           <p className={cn(
             "text-sm flex-grow",
-            imageUrl ? "text-white/80 dark:text-white/80" : "text-muted-foreground"
+            imageUrl ? "text-white/90 dark:text-white/90" : "text-muted-foreground dark:text-muted-foreground"
           )}>{description}</p>
           <div className="mt-4 flex justify-end">
             <span className={cn(

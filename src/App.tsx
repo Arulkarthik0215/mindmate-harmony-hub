@@ -10,6 +10,8 @@ import Login from "./pages/Auth/Login";
 import Register from "./pages/Auth/Register";
 import Dashboard from "./pages/Dashboard";
 import ChatSupport from "./pages/ChatSupport";
+import MoodJournal from "./pages/MoodJournal";
+import Resources from "./pages/Resources";
 
 const queryClient = new QueryClient();
 
@@ -25,6 +27,8 @@ const App = () => (
           <Route path="/auth/register" element={<Register />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/chatbot" element={<ChatSupport />} />
+          <Route path="/mood-journal" element={<MoodJournal />} />
+          <Route path="/resources" element={<Resources />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

@@ -287,6 +287,11 @@ const FacialAnalysisModule = () => {
                 </div>
               ) : (
                 <div className="flex flex-col items-center justify-center h-64 text-center">
+                  <img 
+                    src="https://images.unsplash.com/photo-1581092795360-fd1ca04f0952" 
+                    alt="Facial expression analysis" 
+                    className="w-40 h-40 object-cover rounded-lg mb-4 opacity-50"
+                  />
                   <p className="text-muted-foreground">
                     {cameraPermission === false 
                       ? "Please grant camera access to use the facial analysis feature" 

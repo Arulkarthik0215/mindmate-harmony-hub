@@ -6,21 +6,98 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Send } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
-// The key is a placeholder - see note below about API keys
-const API_KEY = ""; 
-
 interface Message {
   role: 'user' | 'assistant';
   content: string;
 }
 
+// Demo responses for mental health support
+const demoResponses = {
+  greeting: [
+    "Hello! I'm your MindMate assistant. How are you feeling today?",
+    "Hi there! I'm here to support your mental wellbeing. How can I help you today?",
+    "Welcome to MindMate! I'm here to chat about how you're feeling. What's on your mind?"
+  ],
+  anxiety: [
+    "It sounds like you might be experiencing anxiety. Try some deep breathing exercises - breathe in for 4 counts, hold for 7, and exhale for 8. This can help calm your nervous system.",
+    "Anxiety can feel overwhelming. Remember that these feelings are temporary. Consider grounding yourself by naming 5 things you can see, 4 you can touch, 3 you can hear, 2 you can smell, and 1 you can taste.",
+    "When anxiety hits, it might help to focus on the present moment. Try the 5-4-3-2-1 grounding technique or download a meditation app to guide you through mindfulness exercises."
+  ],
+  depression: [
+    "I'm sorry you're feeling down. Depression can make everything feel more difficult. Try to be gentle with yourself and celebrate small accomplishments.",
+    "When you're feeling depressed, it can help to establish a daily routine. Even small activities like taking a short walk or calling a friend can make a difference.",
+    "Depression often lies to us about our worth and capabilities. Remember that your feelings, while valid, don't define your value or future possibilities."
+  ],
+  stress: [
+    "Stress can be overwhelming. Try breaking down what's causing your stress into smaller, manageable parts. What's one small step you could take today?",
+    "When stress builds up, our bodies need relief. Physical activity, even just stretching, can help release tension. Could you take a 5-minute break to move your body?",
+    "Managing stress often requires setting boundaries. It's okay to say no to additional responsibilities when you're already feeling overwhelmed."
+  ],
+  sleep: [
+    "Sleep troubles can significantly impact mental health. Try establishing a consistent sleep schedule and a relaxing bedtime routine without screens.",
+    "For better sleep, consider limiting caffeine after noon and creating a cool, dark sleeping environment. White noise or gentle music might also help.",
+    "If racing thoughts keep you awake, try jotting them down in a journal before bed. This can help clear your mind for sleep."
+  ],
+  selfCare: [
+    "Self-care isn't selfish - it's necessary for wellbeing. What's one small thing you could do today just for you?",
+    "Regular self-care helps build resilience. This could include physical activity, creative expression, time in nature, or connecting with supportive people.",
+    "Sometimes self-care means setting boundaries or saying no to additional commitments. Prioritizing your wellbeing is important."
+  ],
+  professional: [
+    "While I'm here to support you, some challenges benefit from professional help. Consider reaching out to a therapist or counselor who specializes in what you're experiencing.",
+    "It sounds like you might benefit from speaking with a mental health professional. They can provide specialized support tailored to your specific needs.",
+    "For ongoing support, connecting with a therapist could be valuable. Would you like to check out the Professional Support section to find qualified providers?"
+  ],
+  gratitude: [
+    "Practicing gratitude can shift our perspective. What's something small you appreciate today?",
+    "Even in difficult times, noting small positives can help. Perhaps the taste of your morning coffee or a kind text from a friend?",
+    "Research shows gratitude practices can improve mental wellbeing. Consider keeping a gratitude journal to note 3 things you appreciate each day."
+  ],
+  default: [
+    "I'm here to support you on your mental health journey. Could you tell me more about what you're experiencing?",
+    "Thank you for sharing that with me. While I'm a demo assistant, I truly want to help. Would it help to explore coping strategies for what you're feeling?",
+    "I appreciate you trusting me with your thoughts. Remember that seeking support is a sign of strength, not weakness."
+  ]
+};
+
+// Helper function to find relevant responses based on keywords
+const findRelevantResponse = (input: string): string => {
+  const lowerInput = input.toLowerCase();
+  
+  if (/\b(hi|hello|hey|greetings)\b/.test(lowerInput)) {
+    return getRandomResponse('greeting');
+  } else if (/\b(anxious|anxiety|panic|worry|worried|nervous|fear|afraid)\b/.test(lowerInput)) {
+    return getRandomResponse('anxiety');
+  } else if (/\b(sad|depress|depressed|depression|hopeless|unmotivated|down|blue)\b/.test(lowerInput)) {
+    return getRandomResponse('depression');
+  } else if (/\b(stress|stressed|overwhelm|overwhelmed|pressure|burnout)\b/.test(lowerInput)) {
+    return getRandomResponse('stress');
+  } else if (/\b(sleep|insomnia|tired|exhausted|rest|fatigue|bed)\b/.test(lowerInput)) {
+    return getRandomResponse('sleep');
+  } else if (/\b(self-care|selfcare|care|routine|healthy|practice)\b/.test(lowerInput)) {
+    return getRandomResponse('selfCare');
+  } else if (/\b(therapist|counselor|professional|doctor|psychiatrist|psychologist)\b/.test(lowerInput)) {
+    return getRandomResponse('professional');
+  } else if (/\b(grateful|gratitude|thankful|appreciate|appreciation|blessing)\b/.test(lowerInput)) {
+    return getRandomResponse('gratitude');
+  } else {
+    return getRandomResponse('default');
+  }
+};
+
+// Get random response from a category
+const getRandomResponse = (category: keyof typeof demoResponses): string => {
+  const responses = demoResponses[category];
+  const randomIndex = Math.floor(Math.random() * responses.length);
+  return responses[randomIndex];
+};
+
 const ChatModule = () => {
   const [input, setInput] = useState('');
-  const [apiKey, setApiKey] = useState(localStorage.getItem('mindmate_api_key') || '');
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
-      content: 'Hello! I\'m your MindMate assistant. How are you feeling today?'
+      content: "Hello! I'm your MindMate assistant. How are you feeling today?"
     }
   ]);
   const [isLoading, setIsLoading] = useState(false);
@@ -35,13 +112,6 @@ const ChatModule = () => {
     scrollToBottom();
   }, [messages]);
 
-  useEffect(() => {
-    // Save API key to localStorage if it exists
-    if (apiKey) {
-      localStorage.setItem('mindmate_api_key', apiKey);
-    }
-  }, [apiKey]);
-
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -53,69 +123,16 @@ const ChatModule = () => {
     setInput('');
     setIsLoading(true);
     
-    try {
-      if (!apiKey) {
-        // If no API key, provide a simulated response
-        setTimeout(() => {
-          const botMessage: Message = { 
-            role: 'assistant', 
-            content: "I notice you haven't entered an OpenAI API key yet. I'm currently in demo mode, so my responses are pre-programmed. To enable the full AI experience, please enter your OpenAI API key in the field above the chat."
-          };
-          setMessages(prev => [...prev, botMessage]);
-          setIsLoading(false);
-        }, 1000);
-        return;
-      }
-      
-      // Real integration with OpenAI API
-      const response = await fetch("https://api.openai.com/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${apiKey}`
-        },
-        body: JSON.stringify({
-          model: "gpt-4o-mini",
-          messages: [
-            {
-              role: "system",
-              content: "You are a compassionate mental health assistant called MindMate. Provide supportive, empathetic responses. Never give harmful advice. Suggest professional help for serious concerns."
-            },
-            ...messages.map(msg => ({ role: msg.role, content: msg.content })),
-            { role: "user", content: input }
-          ],
-          max_tokens: 500
-        })
-      });
-      
-      if (!response.ok) {
-        throw new Error(`API error: ${response.status}`);
-      }
-      
-      const data = await response.json();
+    // Simulate assistant response with a short delay
+    setTimeout(() => {
+      const responseContent = findRelevantResponse(userMessage.content);
       const botMessage: Message = { 
         role: 'assistant', 
-        content: data.choices[0].message.content 
+        content: responseContent
       };
       setMessages(prev => [...prev, botMessage]);
-      
-    } catch (error) {
-      console.error("Error calling chat API:", error);
-      toast({
-        title: "Error",
-        description: "Failed to get a response. Please check your API key or try again later.",
-        variant: "destructive"
-      });
-      
-      // Add a fallback response
-      const botMessage: Message = { 
-        role: 'assistant', 
-        content: "I'm having trouble connecting to my systems. This could be due to an invalid API key or network issues. Please try again later or check your API key."
-      };
-      setMessages(prev => [...prev, botMessage]);
-    } finally {
       setIsLoading(false);
-    }
+    }, 1000);
   };
 
   return (
@@ -123,33 +140,6 @@ const ChatModule = () => {
       <div className="p-4 border-b bg-muted/30">
         <h2 className="text-xl font-semibold">MindMate Chat Support</h2>
         <p className="text-sm text-muted-foreground mb-2">Talk to our AI assistant about how you're feeling</p>
-        
-        <div className="flex gap-2 items-center">
-          <Input
-            type="password"
-            placeholder="Enter OpenAI API Key (optional)"
-            value={apiKey}
-            onChange={(e) => setApiKey(e.target.value)}
-            className="text-xs"
-          />
-          <Button 
-            variant="outline" 
-            size="sm"
-            onClick={() => {
-              if (apiKey) {
-                toast({
-                  title: "API Key Saved",
-                  description: "Your API key has been saved locally in your browser."
-                });
-              }
-            }}
-          >
-            Save Key
-          </Button>
-        </div>
-        <p className="text-xs text-muted-foreground mt-1">
-          Your API key is stored locally in your browser only. Without a key, the chat will operate in demo mode.
-        </p>
       </div>
       
       <ScrollArea className="flex-grow p-4">

@@ -75,8 +75,8 @@ const Dashboard = () => {
             transition={{ duration: 0.5 }}
             className="space-y-4"
           >
-            <h1 className="text-3xl font-bold tracking-tight">Welcome to MindMate</h1>
-            <p className="text-muted-foreground max-w-3xl">
+            <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Welcome to MindMate</h1>
+            <p className="text-gray-700 dark:text-gray-300 max-w-3xl">
               Your personal mental health companion. Choose from the modules below to get started on your mental wellness journey.
             </p>
           </motion.div>
@@ -102,8 +102,8 @@ const Dashboard = () => {
             transition={{ duration: 0.5, delay: 0.7 }}
             className="bg-gradient-to-r from-mindmate-100/80 to-lilac-100/80 dark:from-mindmate-900/30 dark:to-lilac-900/30 p-6 rounded-2xl border border-white/20 dark:border-white/5 backdrop-blur-md"
           >
-            <h3 className="text-xl font-semibold mb-2">Your Mental Health Journey</h3>
-            <p className="text-muted-foreground">
+            <h3 className="text-xl font-semibold mb-2 text-gray-900 dark:text-white">Your Mental Health Journey</h3>
+            <p className="text-gray-700 dark:text-gray-300">
               MindMate provides personalized assistance based on your interactions and mood tracking data. 
               The more you use the platform, the more tailored your experience will become.
             </p>

@@ -63,11 +63,11 @@ const ModuleCard: React.FC<ModuleCardProps> = ({
           </div>
           <h3 className={cn(
             "text-xl font-semibold mb-2",
-            imageUrl ? "text-white dark:text-white" : "text-foreground dark:text-foreground"
+            imageUrl ? "text-white dark:text-white" : "text-gray-800 dark:text-gray-200"
           )}>{title}</h3>
           <p className={cn(
             "text-sm flex-grow",
-            imageUrl ? "text-white/90 dark:text-white/90" : "text-muted-foreground dark:text-muted-foreground"
+            imageUrl ? "text-white/90 dark:text-white/90" : "text-gray-700 dark:text-gray-300"
           )}>{description}</p>
           <div className="mt-4 flex justify-end">
             <span className={cn(

@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Bell, LogOut, Menu, User, X } from 'lucide-react';
@@ -13,13 +13,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 interface AppLayoutProps {
   children: React.ReactNode;
 }
 
 const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
-  const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -32,10 +34,17 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
     navigate('/');
   };
 
+  // Mock user data - in a real app, this would come from authentication
+  const userData = {
+    name: "John Doe",
+    email: "john.doe@example.com",
+    joinDate: "January 2023",
+    assessmentsTaken: 12,
+    lastLogin: "Today at 9:30 AM"
+  };
+
   const navItems = [
     { name: 'Dashboard', path: '/dashboard' },
-    { name: 'Profile', path: '/profile' },
-    { name: 'Settings', path: '/settings' },
   ];
 
   return (
@@ -78,7 +87,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setIsProfileOpen(true)}>
                   <User className="mr-2 h-4 w-4" />
                   <span>Profile</span>
                 </DropdownMenuItem>
@@ -92,6 +101,44 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
           </div>
         </div>
       </header>
+      
+      {/* Profile Dialog */}
+      <Dialog open={isProfileOpen} onOpenChange={setIsProfileOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Your Profile</DialogTitle>
+          </DialogHeader>
+          <div className="flex flex-col items-center py-4">
+            <Avatar className="h-24 w-24 mb-4">
+              <AvatarImage src="https://github.com/shadcn.png" alt="User" />
+              <AvatarFallback className="text-xl">JD</AvatarFallback>
+            </Avatar>
+            <h2 className="text-xl font-bold">{userData.name}</h2>
+            <p className="text-sm text-muted-foreground">{userData.email}</p>
+          </div>
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4 text-sm">
+              <div className="space-y-1">
+                <p className="text-muted-foreground">Member since</p>
+                <p className="font-medium">{userData.joinDate}</p>
+              </div>
+              <div className="space-y-1">
+                <p className="text-muted-foreground">Assessments taken</p>
+                <p className="font-medium">{userData.assessmentsTaken}</p>
+              </div>
+              <div className="space-y-1">
+                <p className="text-muted-foreground">Last login</p>
+                <p className="font-medium">{userData.lastLogin}</p>
+              </div>
+            </div>
+            <div className="pt-4 border-t">
+              <p className="text-sm text-muted-foreground">
+                Your personal information is kept private and secure.
+              </p>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
       
       {/* Main content */}
       <div className="flex flex-1">

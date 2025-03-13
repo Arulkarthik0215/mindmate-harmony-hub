@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Camera, RefreshCw } from 'lucide-react';
@@ -17,11 +16,9 @@ const FacialAnalysisModule = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   
-  // Request camera access when component mounts
   useEffect(() => {
     requestCameraAccess();
     
-    // Clean up function to stop camera when component unmounts
     return () => {
       stopCamera();
     };
@@ -53,7 +50,6 @@ const FacialAnalysisModule = () => {
   
   const startCamera = async () => {
     if (cameraPermission === false) {
-      // If permission was previously denied, ask again
       requestCameraAccess();
       return;
     }
@@ -93,10 +89,8 @@ const FacialAnalysisModule = () => {
       const imageDataUrl = canvas.toDataURL('image/png');
       setImageCapture(imageDataUrl);
       
-      // Stop the camera after capturing
       stopCamera();
       
-      // Simulate analysis
       analyzeImage();
     }
   };
@@ -104,12 +98,10 @@ const FacialAnalysisModule = () => {
   const analyzeImage = () => {
     setIsAnalyzing(true);
     
-    // Simulate AI analysis with timeout (in a real app, this would be an API call)
     setTimeout(() => {
-      // Generate random mood for demo
       const moods = ['Happy', 'Calm', 'Neutral', 'Sad', 'Anxious'];
       const randomMood = moods[Math.floor(Math.random() * moods.length)];
-      const randomConfidence = Math.floor(Math.random() * 30) + 70; // 70-99%
+      const randomConfidence = Math.floor(Math.random() * 30) + 70;
       
       setMood(randomMood);
       setConfidence(randomConfidence);
@@ -198,7 +190,6 @@ const FacialAnalysisModule = () => {
                   />
                 )}
                 
-                {/* Hidden canvas for capturing image */}
                 <canvas ref={canvasRef} className="hidden" />
               </div>
               
@@ -288,7 +279,7 @@ const FacialAnalysisModule = () => {
               ) : (
                 <div className="flex flex-col items-center justify-center h-64 text-center">
                   <img 
-                    src="https://images.unsplash.com/photo-1581092795360-fd1ca04f0952" 
+                    src="https://images.unsplash.com/photo-1620228885783-8b9d98g69e7?auto=format&fit=crop&q=80&w=800"
                     alt="Facial expression analysis" 
                     className="w-40 h-40 object-cover rounded-lg mb-4 opacity-50"
                   />

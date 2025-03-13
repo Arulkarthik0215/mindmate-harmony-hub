@@ -57,22 +57,22 @@ const ModuleCard: React.FC<ModuleCardProps> = ({
         )}>
           <div className={cn(
             "mb-4",
-            imageUrl ? "text-white dark:text-white" : "text-mindmate-500 dark:text-mindmate-300"
+            imageUrl ? "text-white" : "text-mindmate-500 dark:text-mindmate-300"
           )}>
             {icon}
           </div>
           <h3 className={cn(
             "text-xl font-semibold mb-2",
-            imageUrl ? "text-white dark:text-white" : "text-gray-800 dark:text-gray-200"
+            imageUrl ? "text-white" : "text-gray-800 dark:text-gray-200"
           )}>{title}</h3>
           <p className={cn(
             "text-sm flex-grow",
-            imageUrl ? "text-white/90 dark:text-white/90" : "text-gray-700 dark:text-gray-300"
+            imageUrl ? "text-white dark:text-white" : "text-gray-700 dark:text-gray-300"
           )}>{description}</p>
           <div className="mt-4 flex justify-end">
             <span className={cn(
               "text-xs font-medium flex items-center",
-              imageUrl ? "text-white/90 dark:text-white/90" : "text-mindmate-600 dark:text-mindmate-300"
+              imageUrl ? "text-white/90" : "text-mindmate-600 dark:text-mindmate-300"
             )}>
               Open
               <svg

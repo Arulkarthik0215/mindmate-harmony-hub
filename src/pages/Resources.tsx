@@ -15,6 +15,7 @@ interface Resource {
   source: string;
   link: string;
   type: 'book' | 'video';
+  imageUrl: string;
 }
 
 // List of freely available mental health resources
@@ -25,7 +26,8 @@ const resources: Resource[] = [
     description: 'By David D. Burns - A scientifically proven, drug-free treatment for depression.',
     source: 'Public Domain',
     link: '/resources/feeling-good.pdf',
-    type: 'book'
+    type: 'book',
+    imageUrl: 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&q=80&w=800&h=500'
   },
   {
     id: 'book-2',
@@ -33,7 +35,8 @@ const resources: Resource[] = [
     description: 'By Dennis Greenberger & Christine Padesky - Change how you feel by changing how you think.',
     source: 'Free Edition',
     link: '/resources/mind-over-mood.pdf',
-    type: 'book'
+    type: 'book',
+    imageUrl: 'https://images.unsplash.com/photo-1532012197267-da84d127e765?auto=format&fit=crop&q=80&w=800&h=500'
   },
   {
     id: 'book-3',
@@ -41,7 +44,8 @@ const resources: Resource[] = [
     description: 'By David A. Clark & Aaron T. Beck - Cognitive behavioral therapy approach to anxiety.',
     source: 'Open Access',
     link: '/resources/anxiety-workbook.pdf',
-    type: 'book'
+    type: 'book',
+    imageUrl: 'https://images.unsplash.com/photo-1532153975070-2e9ab71f1b14?auto=format&fit=crop&q=80&w=800&h=500'
   },
   {
     id: 'video-1',
@@ -49,7 +53,8 @@ const resources: Resource[] = [
     description: 'A comprehensive guide to understanding and managing depression symptoms.',
     source: 'YouTube',
     link: 'https://www.youtube.com/watch?v=TVgQ_tgWMyU',
-    type: 'video'
+    type: 'video',
+    imageUrl: 'https://images.unsplash.com/photo-1493836512294-502baa1986e2?auto=format&fit=crop&q=80&w=800&h=500'
   },
   {
     id: 'video-2',
@@ -57,7 +62,8 @@ const resources: Resource[] = [
     description: '15-minute guided meditation practice for anxiety relief.',
     source: 'YouTube',
     link: 'https://www.youtube.com/watch?v=O-6f5wQXSu8',
-    type: 'video'
+    type: 'video',
+    imageUrl: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&q=80&w=800&h=500'
   },
   {
     id: 'video-3',
@@ -65,7 +71,8 @@ const resources: Resource[] = [
     description: 'Learn the basics of CBT and how it can help improve mental health.',
     source: 'YouTube',
     link: 'https://www.youtube.com/watch?v=8bnP5GvUL_U',
-    type: 'video'
+    type: 'video',
+    imageUrl: 'https://images.unsplash.com/photo-1536746803623-cef87080bfc8?auto=format&fit=crop&q=80&w=800&h=500'
   },
   {
     id: 'video-4',
@@ -73,7 +80,8 @@ const resources: Resource[] = [
     description: 'Practical techniques for managing daily stress and preventing burnout.',
     source: 'YouTube',
     link: 'https://www.youtube.com/watch?v=hnpQrMqDoqE',
-    type: 'video'
+    type: 'video',
+    imageUrl: 'https://images.unsplash.com/photo-1513682121497-80211f36a7d3?auto=format&fit=crop&q=80&w=800&h=500'
   }
 ];
 
@@ -132,44 +140,52 @@ const Resources = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
-                  className="border rounded-lg p-6 bg-card"
+                  className="border rounded-lg overflow-hidden bg-card"
                 >
-                  <div className="flex justify-between items-start mb-4">
-                    <div className="flex items-center">
+                  <div className="aspect-video relative">
+                    <img 
+                      src={resource.imageUrl} 
+                      alt={resource.title} 
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute top-2 right-2 bg-black/50 text-white text-xs px-2 py-1 rounded-full">
+                      {resource.source}
+                    </div>
+                  </div>
+                  
+                  <div className="p-4">
+                    <div className="flex items-center mb-2">
                       {resource.type === 'book' ? (
-                        <BookOpen className="h-6 w-6 text-primary mr-2" />
+                        <BookOpen className="h-5 w-5 text-primary mr-2" />
                       ) : (
-                        <Video className="h-6 w-6 text-primary mr-2" />
+                        <Video className="h-5 w-5 text-primary mr-2" />
                       )}
                       <h3 className="text-lg font-semibold">{resource.title}</h3>
                     </div>
-                    <span className="text-xs bg-secondary px-2 py-1 rounded-full">
-                      {resource.source}
-                    </span>
-                  </div>
-                  
-                  <p className="text-muted-foreground mb-4 text-sm">{resource.description}</p>
-                  
-                  <div className="mt-auto">
-                    {resource.type === 'book' ? (
-                      <Button 
-                        variant="outline" 
-                        className="w-full flex items-center justify-center gap-2"
-                        onClick={() => window.open(resource.link, '_blank')}
-                      >
-                        <Download className="h-4 w-4" />
-                        Download PDF
-                      </Button>
-                    ) : (
-                      <Button 
-                        variant="outline" 
-                        className="w-full flex items-center justify-center gap-2"
-                        onClick={() => window.open(resource.link, '_blank')}
-                      >
-                        <ExternalLink className="h-4 w-4" />
-                        Watch Video
-                      </Button>
-                    )}
+                    
+                    <p className="text-muted-foreground mb-4 text-sm">{resource.description}</p>
+                    
+                    <div className="mt-auto">
+                      {resource.type === 'book' ? (
+                        <Button 
+                          variant="outline" 
+                          className="w-full flex items-center justify-center gap-2"
+                          onClick={() => window.open(resource.link, '_blank')}
+                        >
+                          <Download className="h-4 w-4" />
+                          Download PDF
+                        </Button>
+                      ) : (
+                        <Button 
+                          variant="outline" 
+                          className="w-full flex items-center justify-center gap-2"
+                          onClick={() => window.open(resource.link, '_blank')}
+                        >
+                          <ExternalLink className="h-4 w-4" />
+                          Watch Video
+                        </Button>
+                      )}
+                    </div>
                   </div>
                 </motion.div>
               ))}

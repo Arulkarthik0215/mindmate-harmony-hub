@@ -1,9 +1,10 @@
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Mic, Square, Loader2, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
+import { toast } from "@/hooks/use-toast";
 import AppLayout from '@/components/Layout/AppLayout';
 import PageTransition from '@/components/ui/PageTransition';
 
@@ -12,12 +13,69 @@ const VoiceAnalysisModule = () => {
   const [recordingTime, setRecordingTime] = useState(0);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisResults, setAnalysisResults] = useState<any>(null);
+  const [micPermission, setMicPermission] = useState<boolean | null>(null);
   
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   
+  // Request microphone access when component mounts
+  useEffect(() => {
+    checkMicrophonePermission();
+    
+    // Clean up on unmount
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+      
+      if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
+        mediaRecorderRef.current.stop();
+        const tracks = mediaRecorderRef.current.stream.getTracks();
+        tracks.forEach((track) => track.stop());
+      }
+    };
+  }, []);
+  
+  const checkMicrophonePermission = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      stream.getTracks().forEach(track => track.stop());
+      setMicPermission(true);
+    } catch (err) {
+      console.error("Error accessing microphone:", err);
+      setMicPermission(false);
+      toast({
+        variant: "destructive",
+        title: "Microphone access denied",
+        description: "We need microphone access to analyze your voice.",
+        duration: 5000,
+      });
+    }
+  };
+  
+  const requestMicrophoneAccess = async () => {
+    try {
+      await navigator.mediaDevices.getUserMedia({ audio: true });
+      setMicPermission(true);
+      toast({
+        title: "Microphone access granted",
+        description: "You can now record your voice for analysis.",
+        duration: 3000,
+      });
+    } catch (err) {
+      console.error("Error requesting microphone access:", err);
+      setMicPermission(false);
+    }
+  };
+  
   const startRecording = async () => {
+    if (micPermission === false) {
+      // If permission was previously denied, ask again
+      requestMicrophoneAccess();
+      return;
+    }
+    
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       
@@ -44,8 +102,21 @@ const VoiceAnalysisModule = () => {
         setRecordingTime((prev) => prev + 1);
       }, 1000);
       
+      toast({
+        title: "Recording started",
+        description: "Speak clearly about how you're feeling.",
+        duration: 3000,
+      });
+      
     } catch (err) {
       console.error("Error accessing microphone:", err);
+      setMicPermission(false);
+      toast({
+        variant: "destructive",
+        title: "Microphone access denied",
+        description: "We need microphone access to analyze your voice.",
+        duration: 5000,
+      });
     }
   };
   
@@ -64,6 +135,12 @@ const VoiceAnalysisModule = () => {
       
       setIsRecording(false);
       setIsAnalyzing(true);
+      
+      toast({
+        title: "Recording complete",
+        description: "Analyzing your voice patterns...",
+        duration: 2000,
+      });
     }
   };
   
@@ -97,23 +174,14 @@ const VoiceAnalysisModule = () => {
       
       setAnalysisResults(mockResults);
       setIsAnalyzing(false);
+      
+      toast({
+        title: "Analysis Complete",
+        description: `Detected emotion: ${mockResults.emotionalState.primary}`,
+        duration: 3000,
+      });
     }, 2000);
   };
-  
-  // Clean up on unmount
-  React.useEffect(() => {
-    return () => {
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-      }
-      
-      if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
-        mediaRecorderRef.current.stop();
-        const tracks = mediaRecorderRef.current.stream.getTracks();
-        tracks.forEach((track) => track.stop());
-      }
-    };
-  }, []);
   
   // Format seconds into mm:ss
   const formatTime = (seconds: number) => {
@@ -147,7 +215,16 @@ const VoiceAnalysisModule = () => {
               <h2 className="text-xl font-semibold mb-6">Record Your Voice</h2>
               
               <div className="flex flex-col items-center justify-center py-8">
-                {isRecording ? (
+                {micPermission === false ? (
+                  <div className="text-center space-y-4">
+                    <p className="text-muted-foreground">
+                      Microphone access is required to analyze your voice.
+                    </p>
+                    <Button onClick={requestMicrophoneAccess} className="bg-mindmate-500 hover:bg-mindmate-600">
+                      Grant Microphone Access
+                    </Button>
+                  </div>
+                ) : isRecording ? (
                   <div className="space-y-6 w-full">
                     <div className="flex justify-center">
                       <div className="relative">
@@ -309,7 +386,9 @@ const VoiceAnalysisModule = () => {
               ) : (
                 <div className="flex flex-col items-center justify-center h-64 text-center">
                   <p className="text-muted-foreground">
-                    Record your voice to receive a detailed analysis
+                    {micPermission === false 
+                      ? "Please grant microphone access to use the voice analysis feature" 
+                      : "Record your voice to receive a detailed analysis"}
                   </p>
                 </div>
               )}

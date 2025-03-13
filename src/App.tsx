@@ -12,6 +12,9 @@ import Dashboard from "./pages/Dashboard";
 import ChatSupport from "./pages/ChatSupport";
 import MoodJournal from "./pages/MoodJournal";
 import Resources from "./pages/Resources";
+import FacialAnalysisModule from "./components/modules/FacialAnalysisModule";
+import VoiceAnalysisModule from "./components/modules/VoiceAnalysisModule";
+import ProfessionalSupport from "./pages/ProfessionalSupport";
 
 const queryClient = new QueryClient();
 
@@ -29,6 +32,9 @@ const App = () => (
           <Route path="/chatbot" element={<ChatSupport />} />
           <Route path="/mood-journal" element={<MoodJournal />} />
           <Route path="/resources" element={<Resources />} />
+          <Route path="/facial-analysis" element={<FacialAnalysisModule />} />
+          <Route path="/voice-analysis" element={<VoiceAnalysisModule />} />
+          <Route path="/professional" element={<ProfessionalSupport />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

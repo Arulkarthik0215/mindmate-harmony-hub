@@ -15,7 +15,8 @@ const Dashboard = () => {
       icon: <MessageCircle className="w-8 h-8" />,
       to: '/chatbot',
       color: 'bg-mindmate-50/80 dark:bg-mindmate-900/30',
-      delay: 1
+      delay: 1,
+      imageUrl: 'https://images.unsplash.com/photo-1598257006463-7c64a5a538cc?auto=format&fit=crop&q=80&w=800'
     },
     {
       title: 'Facial Analysis',
@@ -23,7 +24,8 @@ const Dashboard = () => {
       icon: <User className="w-8 h-8" />,
       to: '/facial-analysis',
       color: 'bg-lilac-50/80 dark:bg-lilac-900/30',
-      delay: 2
+      delay: 2,
+      imageUrl: 'https://images.unsplash.com/photo-1526661934280-676cef25bc9b?auto=format&fit=crop&q=80&w=800'
     },
     {
       title: 'Voice Analysis',
@@ -31,7 +33,8 @@ const Dashboard = () => {
       icon: <Mic className="w-8 h-8" />,
       to: '/voice-analysis',
       color: 'bg-mindmate-50/80 dark:bg-mindmate-900/30',
-      delay: 3
+      delay: 3,
+      imageUrl: 'https://images.unsplash.com/photo-1567596388756-f6d710c8fc07?auto=format&fit=crop&q=80&w=800'
     },
     {
       title: 'Mood Journal',
@@ -39,7 +42,8 @@ const Dashboard = () => {
       icon: <Brain className="w-8 h-8" />,
       to: '/mood-journal',
       color: 'bg-lilac-50/80 dark:bg-lilac-900/30',
-      delay: 4
+      delay: 4,
+      imageUrl: 'https://images.unsplash.com/photo-1517971129774-8a2b38fa128e?auto=format&fit=crop&q=80&w=800'
     },
     {
       title: 'Resources',
@@ -47,7 +51,8 @@ const Dashboard = () => {
       icon: <BookOpen className="w-8 h-8" />,
       to: '/resources',
       color: 'bg-mindmate-50/80 dark:bg-mindmate-900/30',
-      delay: 5
+      delay: 5,
+      imageUrl: 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&q=80&w=800'
     },
     {
       title: 'Professional Support',
@@ -55,7 +60,8 @@ const Dashboard = () => {
       icon: <VideoIcon className="w-8 h-8" />,
       to: '/professional',
       color: 'bg-lilac-50/80 dark:bg-lilac-900/30',
-      delay: 6
+      delay: 6,
+      imageUrl: 'https://images.unsplash.com/photo-1573497491208-6b1acb260507?auto=format&fit=crop&q=80&w=800'
     }
   ];
 
@@ -85,6 +91,7 @@ const Dashboard = () => {
                 to={module.to}
                 color={module.color}
                 delay={module.delay}
+                imageUrl={module.imageUrl}
               />
             ))}
           </div>

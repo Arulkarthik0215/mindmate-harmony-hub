@@ -11,6 +11,7 @@ interface ModuleCardProps {
   to: string;
   color?: string;
   delay?: number;
+  imageUrl?: string;
 }
 
 const ModuleCard: React.FC<ModuleCardProps> = ({
@@ -20,6 +21,7 @@ const ModuleCard: React.FC<ModuleCardProps> = ({
   to,
   color = 'bg-mindmate-100 dark:bg-mindmate-900/40',
   delay = 0,
+  imageUrl,
 }) => {
   return (
     <motion.div
@@ -32,20 +34,46 @@ const ModuleCard: React.FC<ModuleCardProps> = ({
       <Link 
         to={to}
         className={cn(
-          "module-card h-full block p-6 rounded-2xl shadow-sm hover:shadow-md",
+          "module-card h-full block rounded-2xl shadow-sm hover:shadow-md overflow-hidden",
           "border border-white/20 dark:border-white/5",
           "backdrop-blur-md transition-all duration-300",
-          color
+          imageUrl ? "" : color
         )}
       >
-        <div className="flex flex-col h-full">
-          <div className="mb-4 text-mindmate-500 dark:text-mindmate-300">
+        {imageUrl && (
+          <div className="w-full h-32 relative">
+            <img 
+              src={imageUrl} 
+              alt={title} 
+              className="w-full h-full object-cover" 
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+          </div>
+        )}
+        
+        <div className={cn(
+          "flex flex-col h-full p-6",
+          imageUrl ? "-mt-16 relative z-10" : ""
+        )}>
+          <div className={cn(
+            "mb-4",
+            imageUrl ? "text-white dark:text-white" : "text-mindmate-500 dark:text-mindmate-300"
+          )}>
             {icon}
           </div>
-          <h3 className="text-xl font-semibold mb-2">{title}</h3>
-          <p className="text-sm text-muted-foreground flex-grow">{description}</p>
+          <h3 className={cn(
+            "text-xl font-semibold mb-2",
+            imageUrl ? "text-white dark:text-white" : ""
+          )}>{title}</h3>
+          <p className={cn(
+            "text-sm flex-grow",
+            imageUrl ? "text-white/80 dark:text-white/80" : "text-muted-foreground"
+          )}>{description}</p>
           <div className="mt-4 flex justify-end">
-            <span className="text-xs font-medium text-mindmate-600 dark:text-mindmate-300 flex items-center">
+            <span className={cn(
+              "text-xs font-medium flex items-center",
+              imageUrl ? "text-white/90 dark:text-white/90" : "text-mindmate-600 dark:text-mindmate-300"
+            )}>
               Open
               <svg
                 xmlns="http://www.w3.org/2000/svg"

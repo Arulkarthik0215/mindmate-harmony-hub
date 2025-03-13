@@ -1,8 +1,9 @@
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Camera, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { toast } from "@/hooks/use-toast";
 import AppLayout from '@/components/Layout/AppLayout';
 import PageTransition from '@/components/ui/PageTransition';
 
@@ -11,18 +12,61 @@ const FacialAnalysisModule = () => {
   const [mood, setMood] = useState<string | null>(null);
   const [confidence, setConfidence] = useState<number | null>(null);
   const [imageCapture, setImageCapture] = useState<string | null>(null);
+  const [cameraPermission, setCameraPermission] = useState<boolean | null>(null);
   
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   
-  const startCamera = async () => {
+  // Request camera access when component mounts
+  useEffect(() => {
+    requestCameraAccess();
+    
+    // Clean up function to stop camera when component unmounts
+    return () => {
+      stopCamera();
+    };
+  }, []);
+  
+  const requestCameraAccess = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ video: true });
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
+        setCameraPermission(true);
+        toast({
+          title: "Camera access granted",
+          description: "You can now capture your facial expression for analysis.",
+          duration: 3000,
+        });
       }
     } catch (err) {
       console.error("Error accessing camera:", err);
+      setCameraPermission(false);
+      toast({
+        variant: "destructive",
+        title: "Camera access denied",
+        description: "We need camera access to analyze your facial expressions.",
+        duration: 5000,
+      });
+    }
+  };
+  
+  const startCamera = async () => {
+    if (cameraPermission === false) {
+      // If permission was previously denied, ask again
+      requestCameraAccess();
+      return;
+    }
+    
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        setCameraPermission(true);
+      }
+    } catch (err) {
+      console.error("Error accessing camera:", err);
+      setCameraPermission(false);
     }
   };
   
@@ -70,6 +114,12 @@ const FacialAnalysisModule = () => {
       setMood(randomMood);
       setConfidence(randomConfidence);
       setIsAnalyzing(false);
+      
+      toast({
+        title: "Analysis Complete",
+        description: `Detected mood: ${randomMood} (${randomConfidence}% confidence)`,
+        duration: 3000,
+      });
     }, 2000);
   };
   
@@ -79,16 +129,6 @@ const FacialAnalysisModule = () => {
     setImageCapture(null);
     startCamera();
   };
-  
-  // Start camera when component mounts
-  React.useEffect(() => {
-    startCamera();
-    
-    // Clean up function to stop camera when component unmounts
-    return () => {
-      stopCamera();
-    };
-  }, []);
   
   const getMoodColor = (mood: string) => {
     switch(mood) {
@@ -137,7 +177,16 @@ const FacialAnalysisModule = () => {
               <h2 className="text-xl font-semibold mb-4">Capture Your Expression</h2>
               
               <div className="relative w-full aspect-video bg-black/10 dark:bg-black/30 rounded-lg overflow-hidden mb-4">
-                {imageCapture ? (
+                {cameraPermission === false ? (
+                  <div className="w-full h-full flex flex-col items-center justify-center p-4">
+                    <p className="text-center text-muted-foreground mb-4">
+                      Camera access is required to analyze your facial expressions.
+                    </p>
+                    <Button onClick={requestCameraAccess} className="bg-mindmate-500 hover:bg-mindmate-600">
+                      Grant Camera Access
+                    </Button>
+                  </div>
+                ) : imageCapture ? (
                   <img src={imageCapture} alt="Captured face" className="w-full h-full object-cover" />
                 ) : (
                   <video 
@@ -154,17 +203,21 @@ const FacialAnalysisModule = () => {
               </div>
               
               <div className="flex gap-3">
-                {!imageCapture ? (
-                  <Button onClick={captureImage} className="bg-mindmate-500 hover:bg-mindmate-600">
+                {!imageCapture && cameraPermission !== false ? (
+                  <Button 
+                    onClick={captureImage} 
+                    className="bg-mindmate-500 hover:bg-mindmate-600"
+                    disabled={!videoRef.current?.srcObject}
+                  >
                     <Camera className="mr-2 h-4 w-4" />
                     Capture Image
                   </Button>
-                ) : (
+                ) : imageCapture ? (
                   <Button onClick={resetAnalysis} variant="outline">
                     <RefreshCw className="mr-2 h-4 w-4" />
                     Take Another
                   </Button>
-                )}
+                ) : null}
               </div>
             </motion.div>
             
@@ -235,7 +288,9 @@ const FacialAnalysisModule = () => {
               ) : (
                 <div className="flex flex-col items-center justify-center h-64 text-center">
                   <p className="text-muted-foreground">
-                    Capture an image to analyze your mood
+                    {cameraPermission === false 
+                      ? "Please grant camera access to use the facial analysis feature" 
+                      : "Capture an image to analyze your mood"}
                   </p>
                 </div>
               )}

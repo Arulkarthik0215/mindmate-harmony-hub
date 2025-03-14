@@ -3,6 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
+import { Brain, MessageSquare, Smile, Mic, Book, Users } from 'lucide-react';
 
 const Index = () => {
   return (
@@ -35,57 +36,51 @@ const Index = () => {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="rounded-2xl p-1 bg-gradient-to-r from-lilac-300 via-mindmate-300 to-lilac-300"
+            className="glass-card p-6"
           >
-            <div className="bg-background dark:bg-card rounded-2xl p-6 shadow-xl">
-              <div className="grid grid-cols-2 gap-4">
-                {[
-                  { 
-                    title: "Chat Support", 
-                    image: "https://images.unsplash.com/photo-1649972904349-6e44c42644a7?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80", 
-                    color: "bg-mindmate-100 dark:bg-mindmate-900/30" 
-                  },
-                  { 
-                    title: "Facial Analysis", 
-                    image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80", 
-                    color: "bg-lilac-100 dark:bg-lilac-900/30" 
-                  },
-                  { 
-                    title: "Voice Analysis", 
-                    image: "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80", 
-                    color: "bg-lilac-100 dark:bg-lilac-900/30" 
-                  },
-                  { 
-                    title: "Mood Journal", 
-                    image: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80", 
-                    color: "bg-mindmate-100 dark:bg-mindmate-900/30" 
-                  },
-                  { 
-                    title: "Resources", 
-                    image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80", 
-                    color: "bg-mindmate-100 dark:bg-mindmate-900/30" 
-                  },
-                  { 
-                    title: "Professional Help", 
-                    image: "https://images.unsplash.com/photo-1531297484001-80022131f5a1?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80", 
-                    color: "bg-lilac-100 dark:bg-lilac-900/30" 
-                  }
-                ].map((module, index) => (
-                  <div 
-                    key={index}
-                    className={`rounded-xl ${module.color} p-4 text-center hover:scale-105 transition-transform duration-300 flex flex-col items-center justify-center`}
-                  >
-                    <div className="mb-2 h-24 w-full overflow-hidden rounded-lg">
-                      <img 
-                        src={module.image} 
-                        alt={module.title} 
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <h3 className="text-sm font-medium">{module.title}</h3>
+            <div className="grid grid-cols-2 gap-4">
+              {[
+                { 
+                  title: "Chat Support", 
+                  icon: <MessageSquare size={24} />, 
+                  color: "bg-mindmate-100 dark:bg-mindmate-900/30" 
+                },
+                { 
+                  title: "Facial Analysis", 
+                  icon: <Smile size={24} />, 
+                  color: "bg-lilac-100 dark:bg-lilac-900/30" 
+                },
+                { 
+                  title: "Voice Analysis", 
+                  icon: <Mic size={24} />, 
+                  color: "bg-lilac-100 dark:bg-lilac-900/30" 
+                },
+                { 
+                  title: "Mood Journal", 
+                  icon: <Brain size={24} />, 
+                  color: "bg-mindmate-100 dark:bg-mindmate-900/30" 
+                },
+                { 
+                  title: "Resources", 
+                  icon: <Book size={24} />, 
+                  color: "bg-mindmate-100 dark:bg-mindmate-900/30" 
+                },
+                { 
+                  title: "Professional Help", 
+                  icon: <Users size={24} />, 
+                  color: "bg-lilac-100 dark:bg-lilac-900/30" 
+                }
+              ].map((module, index) => (
+                <div 
+                  key={index}
+                  className={`rounded-xl ${module.color} p-4 text-center hover:scale-105 transition-transform duration-300 flex flex-col items-center justify-center`}
+                >
+                  <div className="mb-2 text-mindmate-500 dark:text-mindmate-300">
+                    {module.icon}
                   </div>
-                ))}
-              </div>
+                  <h3 className="text-sm font-medium">{module.title}</h3>
+                </div>
+              ))}
             </div>
           </motion.div>
         </div>
@@ -100,21 +95,21 @@ const Index = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="p-6 bg-card rounded-xl shadow-sm">
               <div className="w-12 h-12 mx-auto mb-4 flex items-center justify-center bg-mindmate-100 dark:bg-mindmate-900/30 rounded-full text-2xl">
-                🧠
+                <Brain size={24} className="text-mindmate-500 dark:text-mindmate-300" />
               </div>
               <h3 className="text-xl font-semibold mb-2">Track Your Mental Health</h3>
               <p className="text-muted-foreground">Monitor your mood, identify patterns, and gain insights into your mental wellbeing.</p>
             </div>
             <div className="p-6 bg-card rounded-xl shadow-sm">
               <div className="w-12 h-12 mx-auto mb-4 flex items-center justify-center bg-lilac-100 dark:bg-lilac-900/30 rounded-full text-2xl">
-                🤝
+                <MessageSquare size={24} className="text-lilac-500 dark:text-lilac-300" />
               </div>
               <h3 className="text-xl font-semibold mb-2">Get Support</h3>
               <p className="text-muted-foreground">Connect with our AI chatbot for immediate support or find professional help when needed.</p>
             </div>
             <div className="p-6 bg-card rounded-xl shadow-sm">
               <div className="w-12 h-12 mx-auto mb-4 flex items-center justify-center bg-mindmate-100 dark:bg-mindmate-900/30 rounded-full text-2xl">
-                📈
+                <Smile size={24} className="text-mindmate-500 dark:text-mindmate-300" />
               </div>
               <h3 className="text-xl font-semibold mb-2">Improve Over Time</h3>
               <p className="text-muted-foreground">Access resources, tools and strategies to build resilience and improve your mental health.</p>

@@ -32,10 +32,11 @@ class MoodJournalProvider extends ChangeNotifier {
       // Sort entries by date, newest first
       _entries.sort((a, b) => b.date.compareTo(a.date));
       
+      _errorMessage = null;
       _isLoading = false;
       notifyListeners();
     } catch (e) {
-      _errorMessage = e.toString();
+      _errorMessage = 'Failed to load mood entries: ${e.toString()}';
       _isLoading = false;
       notifyListeners();
     }
@@ -50,10 +51,11 @@ class MoodJournalProvider extends ChangeNotifier {
       
       await _saveEntries();
       
+      _errorMessage = null;
       _isLoading = false;
       notifyListeners();
     } catch (e) {
-      _errorMessage = e.toString();
+      _errorMessage = 'Failed to add mood entry: ${e.toString()}';
       _isLoading = false;
       notifyListeners();
     }
@@ -69,12 +71,15 @@ class MoodJournalProvider extends ChangeNotifier {
       if (index != -1) {
         _entries[index] = updatedEntry;
         await _saveEntries();
+      } else {
+        throw Exception('Entry not found');
       }
       
+      _errorMessage = null;
       _isLoading = false;
       notifyListeners();
     } catch (e) {
-      _errorMessage = e.toString();
+      _errorMessage = 'Failed to update mood entry: ${e.toString()}';
       _isLoading = false;
       notifyListeners();
     }
@@ -89,10 +94,11 @@ class MoodJournalProvider extends ChangeNotifier {
       
       await _saveEntries();
       
+      _errorMessage = null;
       _isLoading = false;
       notifyListeners();
     } catch (e) {
-      _errorMessage = e.toString();
+      _errorMessage = 'Failed to delete mood entry: ${e.toString()}';
       _isLoading = false;
       notifyListeners();
     }

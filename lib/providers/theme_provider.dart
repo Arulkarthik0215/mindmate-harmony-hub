@@ -12,16 +12,26 @@ class ThemeProvider extends ChangeNotifier {
   }
 
   Future<void> _loadThemePreference() async {
-    final prefs = await SharedPreferences.getInstance();
-    final themeModeIndex = prefs.getInt('theme_mode') ?? 0;
-    _themeMode = ThemeMode.values[themeModeIndex];
-    notifyListeners();
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final themeModeIndex = prefs.getInt('theme_mode') ?? 0;
+      _themeMode = ThemeMode.values[themeModeIndex];
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error loading theme preference: $e');
+      // Default to system theme if there's an error
+      _themeMode = ThemeMode.system;
+    }
   }
 
   Future<void> setThemeMode(ThemeMode mode) async {
-    _themeMode = mode;
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt('theme_mode', mode.index);
-    notifyListeners();
+    try {
+      _themeMode = mode;
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setInt('theme_mode', mode.index);
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error saving theme preference: $e');
+    }
   }
 }

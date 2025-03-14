@@ -5,7 +5,7 @@ class User {
   final String email;
   final String? avatarUrl;
 
-  User({
+  const User({
     required this.id,
     required this.name,
     required this.email,
@@ -26,7 +26,21 @@ class User {
       'id': id,
       'name': name,
       'email': email,
-      'avatarUrl': avatarUrl,
+      if (avatarUrl != null) 'avatarUrl': avatarUrl,
     };
+  }
+
+  User copyWith({
+    String? id,
+    String? name,
+    String? email,
+    String? avatarUrl,
+  }) {
+    return User(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      email: email ?? this.email,
+      avatarUrl: avatarUrl ?? this.avatarUrl,
+    );
   }
 }

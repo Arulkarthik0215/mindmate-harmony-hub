@@ -1,6 +1,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+import 'package:mindmate_harmony_hub/providers/auth_provider.dart';
 import 'package:mindmate_harmony_hub/screens/auth/login_screen.dart';
 import 'package:mindmate_harmony_hub/screens/auth/register_screen.dart';
 import 'package:mindmate_harmony_hub/screens/dashboard_screen.dart';
@@ -12,11 +14,7 @@ import 'package:mindmate_harmony_hub/screens/facial_analysis_screen.dart';
 import 'package:mindmate_harmony_hub/screens/voice_analysis_screen.dart';
 import 'package:mindmate_harmony_hub/screens/splash_screen.dart';
 
-final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
-final GlobalKey<NavigatorState> _shellNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'shell');
-
-final appRouter = GoRouter(
-  navigatorKey: _rootNavigatorKey,
+final GoRouter appRouter = GoRouter(
   initialLocation: '/',
   routes: [
     GoRoute(
@@ -32,7 +30,6 @@ final appRouter = GoRouter(
       builder: (context, state) => const RegisterScreen(),
     ),
     ShellRoute(
-      navigatorKey: _shellNavigatorKey,
       builder: (context, state, child) {
         return ScaffoldWithNavBar(child: child);
       },
@@ -68,6 +65,31 @@ final appRouter = GoRouter(
       ],
     ),
   ],
+  redirect: (context, state) {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final isLoggedIn = authProvider.isLoggedIn;
+
+    final isGoingToLogin = state.path == '/login' || state.path == '/register';
+    final isOnSplash = state.path == '/';
+
+    // Allow access to splash screen
+    if (isOnSplash) {
+      return null;
+    }
+
+    // If not logged in and not going to login page, redirect to login
+    if (!isLoggedIn && !isGoingToLogin) {
+      return '/login';
+    }
+
+    // If logged in and going to login page, redirect to dashboard
+    if (isLoggedIn && isGoingToLogin) {
+      return '/dashboard';
+    }
+
+    // No redirection needed
+    return null;
+  },
 );
 
 class ScaffoldWithNavBar extends StatelessWidget {
@@ -86,6 +108,8 @@ class ScaffoldWithNavBar extends StatelessWidget {
         type: BottomNavigationBarType.fixed,
         currentIndex: _calculateSelectedIndex(context),
         onTap: (int idx) => _onItemTapped(idx, context),
+        selectedItemColor: Theme.of(context).colorScheme.primary,
+        unselectedItemColor: Colors.grey,
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.dashboard),
@@ -93,7 +117,7 @@ class ScaffoldWithNavBar extends StatelessWidget {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.mood),
-            label: 'Mood Journal',
+            label: 'Mood',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.chat),
@@ -113,7 +137,9 @@ class ScaffoldWithNavBar extends StatelessWidget {
   }
 
   int _calculateSelectedIndex(BuildContext context) {
-    final String location = GoRouterState.of(context).location;
+    final GoRouter route = GoRouter.of(context);
+    final String location = route.location;
+    
     if (location.startsWith('/dashboard')) {
       return 0;
     }

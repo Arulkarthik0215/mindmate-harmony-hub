@@ -2,9 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:mindmate_harmony_hub/config/app_config.dart';
 import 'package:mindmate_harmony_hub/models/user.dart';
 
 class AuthProvider extends ChangeNotifier {
@@ -60,7 +58,7 @@ class AuthProvider extends ChangeNotifier {
 
     try {
       // Simulate API call
-      await Future.delayed(const Duration(seconds: 2));
+      await Future.delayed(const Duration(seconds: 1));
       
       // For demo purposes, accept any email with a valid format and password length > 6
       if (!_isValidEmail(email)) {
@@ -110,7 +108,7 @@ class AuthProvider extends ChangeNotifier {
 
     try {
       // Simulate API call
-      await Future.delayed(const Duration(seconds: 2));
+      await Future.delayed(const Duration(seconds: 1));
       
       // For demo purposes, accept any name, email with a valid format, and password length > 6
       if (name.isEmpty) {

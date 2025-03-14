@@ -18,7 +18,7 @@ class MoodEntry {
   final int energyLevel; // 1-10
   final int sleepHours;
 
-  MoodEntry({
+  const MoodEntry({
     required this.id,
     required this.mood,
     required this.note,
